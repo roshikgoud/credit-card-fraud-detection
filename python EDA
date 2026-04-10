@@ -1,1 +1,83 @@
+import numpy as np 
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+df = pd.read_csv(r'C:\Users\roshi\Downloads\archive\credit_card_fraud_dataset.csv')
+df.head()
+df.info()
+df.describe()
+df.shape
+df.isnull().sum()
+# This will ignore dates and strings automatically
+df.corr(numeric_only=True)
+df.cov(numeric_only=True)
+df.duplicated()
+pd.read_csv(r'C:\Users\roshi\Downloads\archive\credit_card_fraud_dataset.csv',header=1)
+df.head()
+df = pd.read_csv(r'C:\Users\roshi\Downloads\archive\credit_card_fraud_dataset.csv')
 
+# 1. Basic fraud statistics
+print("=== FRAUD OVERVIEW ===")
+print(df['IsFraud'].value_counts())
+fraud_percentage = (df['IsFraud'].sum() / len(df)) * 100
+print(f"Fraud percentage: {fraud_percentage:.2f}%")
+
+# 2. Amount analysis - fraud vs legitimate
+print("\n=== AMOUNT ANALYSIS ===")
+print("Fraud transactions:")
+print(df[df['IsFraud']==1]['Amount'].describe())
+print("\nLegitimate transactions:")
+print(df[df['IsFraud']==0]['Amount'].describe())
+
+# 3. Transaction Type analysisaa
+print("\n=== TRANSACTION TYPE ANALYSIS ===")
+fraud_by_type = df.groupby('TransactionType')['IsFraud'].agg(['sum', 'count', 'mean'])
+fraud_by_type.columns = ['Fraud_Count', 'Total_Transactions', 'Fraud_Rate']
+print(fraud_by_type.sort_values('Fraud_Rate', ascending=False))
+
+# 4. Location analysis
+print("\n=== TOP 10 LOCATIONS WITH HIGHEST FRAUD ===")
+fraud_by_location = df.groupby('Location')['IsFraud'].agg(['sum', 'count', 'mean'])
+fraud_by_location.columns = ['Fraud_Count', 'Total_Transactions', 'Fraud_Rate']
+print(fraud_by_location.sort_values('Fraud_Count', ascending=False).head(10))
+
+# 5. Merchant analysis
+print("\n=== TOP 10 MERCHANTS WITH HIGHEST FRAUD ===")
+fraud_by_merchant = df.groupby('MerchantID')['IsFraud'].agg(['sum', 'count', 'mean'])
+fraud_by_merchant.columns = ['Fraud_Count', 'Total_Transactions', 'Fraud_Rate']
+print(fraud_by_merchant.sort_values('Fraud_Count', ascending=False).head(10))
+df = pd.read_csv(r'C:\Users\roshi\Downloads\archive\credit_card_fraud_dataset.csv')
+
+# Transaction Type analysis
+print("=== TRANSACTION TYPE FRAUD RATES ===")
+fraud_by_type = df.groupby('TransactionType')['IsFraud'].agg(['sum', 'count', 'mean'])
+fraud_by_type.columns = ['Fraud_Count', 'Total_Transactions', 'Fraud_Rate']
+fraud_by_type['Fraud_Rate'] = fraud_by_type['Fraud_Rate'] * 100  # Convert to percentage
+print(fraud_by_type.sort_values('Fraud_Rate', ascending=False))
+df = pd.read_csv(r'C:\Users\roshi\Downloads\archive\credit_card_fraud_dataset.csv')
+# Location analysis
+print("=== TOP 10 RISKY LOCATIONS ===")
+fraud_by_location = df.groupby('Location')['IsFraud'].agg(['sum', 'count', 'mean'])
+fraud_by_location.columns = ['Fraud_Count', 'Total_Transactions', 'Fraud_Rate']
+fraud_by_location['Fraud_Rate'] = fraud_by_location['Fraud_Rate'] * 100
+print(fraud_by_location.sort_values('Fraud_Count', ascending=False).head(10))
+import mysql.connector
+
+# Test connection
+conn = mysql.connector.connect(
+    host='localhost',
+    user='root',
+    password='0230',  # Put your actual MySQL password
+    database='creditcard_fraud_detection'
+)
+
+print("Connected successfully!")
+
+# Test query
+cursor = conn.cursor()
+cursor.execute("SHOW TABLES")
+tables = cursor.fetchall()
+print("Tables:", tables)
+
+cursor.close()
+conn.close()
